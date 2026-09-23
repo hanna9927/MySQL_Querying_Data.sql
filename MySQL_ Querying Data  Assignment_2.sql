@@ -1,3 +1,5 @@
+--  DDL Commands 
+--1. Table Creation (CREATE):
 CREATE DATABASE Employee_database;
 USE Employee_database;
 SHOW DATABASES;
@@ -17,6 +19,8 @@ DESC Location;
 SELECT * FROM Employees;
 SELECT * FROM Departments;
 SELECT * FROM Location;
+-- MySQL Assignment 2 – Querying Data
+-- Inserting data 
 INSERT INTO departments (department_id, department_name) VALUES
 (1, 'Software Development'),
 (2, 'Marketing'),
@@ -67,19 +71,28 @@ INSERT INTO employees (employee_id, employee_name, gender, age, hire_date, desig
 (5028, 'Anaya Kapoor', 'F', 26, '2019-07-05', 'Event Coordinator', 6, 1, 60000),
 (5029, 'Arjun Kumar', 'M', 33, '2019-09-11', 'Quality Assurance Analyst', 12, 2, 80000),
 (5030, 'Sara Iyer', 'F', 28, '2019-11-20', 'Project Manager', 5, 1, 90000);
+-- q1. Distinct Values: a query to retrieve distinct salaries from the Employees table
 SELECT DISTINCT Salary
 FROM Employees;
+
+-- q2. Alias (AS):Provide aliases for the "age" and "salary" columns as "Employee_Age" and "Employee_Salary", respectively.
 SELECT 
     Age AS Employee_Age,
     Salary AS Employee_Salary
 FROM Employees;
+
+-- Retrieve employees with a salary greater than ₹50000  
 SELECT *
 FROM Employees
 WHERE Salary > 50000;
+
+-- q3. Where Clause & Operators:Retrieve employees with a salary greater than ₹50000 and hired before 2016-01-01s 
 SELECT *
 FROM Employees
 WHERE Salary > 50000
 AND Hire_Date < '2016-01-01';
+
+-- q4. Find the employee whose designation is missing and fill it with "Data Scientist".
 SELECT *
 FROM Employees
 WHERE Designation IS NULL;
@@ -91,30 +104,54 @@ FROM Employees
 WHERE Employee_ID = 5004;
 SELECT *
 FROM Employees
+
+-- Sorting and Grouping Data:
+-- q1. ORDER BY:Find employees sorted by department ID in ascending order and salary in descending order.
 ORDER BY Department_ID ASC, Salary DESC;
+
+-- q2. LIMIT:Display the first 5 employees hired in the year 2018
 SELECT *
 FROM Employees
 WHERE Hire_Date >= '2018-01-01'
   AND Hire_Date < '2019-01-01'
 ORDER BY Hire_Date ASC
 LIMIT 5;
+
+-- q3. Aggregate Functions: Calculate the sum of all salaries in the Finance department.
 SELECT SUM(e.Salary) AS Total_Finance_Salary
 FROM Employees e
 JOIN Departments d
     ON e.Department_ID = d.Department_ID
 WHERE d.Department_Name = 'Finance';
+
+-- Find the minimum age among all employees.
 SELECT MIN(Age) AS Minimum_Age
 FROM Employees;
+
+-- q4. GROUP BY:List the maximum salary for each location
 Select MAX(Salary) AS Maximum_Salary , Location_id from employees group by Location_id;
+
+-- Calculate the average salary for each designation containing the word 'Analyst'
 Select AVG(SAlary) AS Average_Salary ,designation from employees 
 	where designation LIKE '%Analyst%' Group by Designation;
+
+-- q5. HAVING:Find departments with less than 3 employees.
 Select department_id ,Count(department_id) as count_of_department from employees 
 	group by department_id having count(department_id) < 3;
+
+-- Find locations with female employees whose average age is below 30.
 Select AVG(Age) as Average_age ,Location_id from Employees 
 	where Gender ='F' group by location_id having Avg(age) <30 ;
+
+-- Joins: 
+-- q1. Inner Join:List employee names, their designations, and department names where employees are assigned to a department.
 Select e.Employee_name, e.Designation,d.Department_name from Employees e 
 	INNER JOIN Departments d ON e.Department_id = d.Department_id;
+
+-- q2. Left Join:List all departments along with the total number of employees in each department, including departments with no employees.
 Select d.department_name , count(employee_id) as Employee_count from departments d 
 	left join employees e on d.Department_id = e.Department_id GROUP BY d.Department_id ,d.Department_name;
+
+-- q3. Right Join:Display all locations along with the names of employees assigned to each location. If no employees are assigned to a location, display NULL for employee name.
 SELECT e.Employee_name ,l.Location FROM Employees e
 	RIGHT JOIN Location l ON e.Location_id = l.Location_id;
